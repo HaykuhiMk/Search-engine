@@ -15,7 +15,7 @@ void addToInvertedIndex(std::unordered_map<std::string, std::vector<std::string>
     }
     else
     {
-        invertedIndex.insert({normalizedWord, std::vector<std::string>{fileName}});
+        invertedIndex.insert(std::make_pair(normalizedWord, std::vector<std::string>{fileName}));
     }
 }
 
