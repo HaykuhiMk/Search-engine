@@ -7,6 +7,7 @@ class Word
 {
 public:
     Word(const std::string&, const std::string&);
+    bool operator==(const Word&) const;
     const std::string& getData() const;
     void setData(const std::string& data);
     const std::vector<std::string>& getFileNames() const;
@@ -17,4 +18,10 @@ private:
     std::vector<std::string> mFileNames;
 };
 
+struct HashWord
+{
+    std::size_t operator()(const Word&) const;
+};
+
 #endif  //WORD_H
+
