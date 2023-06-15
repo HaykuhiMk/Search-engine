@@ -1,31 +1,26 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "text.h"
-
-// const std::vector<Word*>& Text::getWord() const
-// {
-//     return mWords;
-// }
 
 void Text::print()
 {
-    for (const auto& pair : this->mWords) 
+    for (const auto& word : mWords) 
     {
-        std::cout << pair.second.getData() << std::endl;
+        std::cout << word.getData() << std::endl;
     }
 }
+
 void Text::addWord(const std::string& word, const std::string& fileName)
 {
     std::string clnWord = cleanWord(word);
-    auto it = mWords.find(clnWord);
-    if (it != mWords.end())
+    Word tmpWord(clnWord, fileName);
+    auto res = mWords.insert(tmpWord);
+    if (!res.second)
     {
-        it->second.addFileName(fileName);
-    }
-    else
-    {
-        mWords.emplace(clnWord, Word(clnWord, fileName));
+        Word& exWord = const_cast<Word&>(*res.first);
+        exWord.addFileName(fileName);
     }
 }
 
@@ -89,62 +84,6 @@ std::string Text::cleanWord(const std::string& word)
     }
     return toLow(clnWord);
 }
-
-void Text::readFile(const std::string& fileName)
-{
-    int fI = std::stoi(fileName.substr(0, fileName.find('.')));
-
-    std::ifstream inFile(fileName);
-    if (!inFile) 
-    {
-        std::cerr << "Failed to open the input file." << std::endl;
-        return;
-    }
-    std::string word;
-    while (inFile >> word) 
-    {
-        std::string clnWord = cleanWord(word);
-        if (clnWord.empty())
-        {
-            continue;
-        }
-        if (checkDir(clnWord, "words_alpha.txt"))
-        {
-            auto it = mWords.find(clnWord);
-            if (it != mWords.end())
-            {
-                it->second.addFileName(fileName);
-            }
-            else
-            {
-                mWords.emplace(clnWord, Word(clnWord, fileName));
-            }
-        }
-    }
-
-    inFile.close();
-    std::ofstream outFile("db.txt", std::ios::app);
-    if (!outFile) 
-    {
-        std::cerr << "Failed to open the output file." << std::endl;
-        return;
-    }
-    for (const auto& entry : mWords) 
-    {
-        const Word& word = entry.second;
-        const std::vector<std::string>& fileNamesStr = word.getFileNames();
-        outFile << word.getData() << ": ";
-        for (const std::string& fileNameStr : fileNamesStr)
-        {
-            int fileName = std::stoi(fileNameStr);
-            outFile << fileName << " ";
-        }
-        outFile << std::endl;
-    }
-    outFile.close();
-    std::cout << "Words saved to db.txt." << std::endl;
-}
-
 
 void Text::searchWord(const std::string& word)
 {
