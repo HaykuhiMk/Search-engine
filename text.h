@@ -1,13 +1,14 @@
 #ifndef TEXT_H
 #define TEXT_H
-#include <unordered_map>
+#include <unordered_set>
 #include "word.h"
 
 class Text
 {
 public:
     void addWord(const std::string& word, const std::string& fileName);
-    void readFile(const std::string&);
+    virtual ~Text() = default;
+    virtual void readFile(const std::string&) = 0;
     std::string cleanWord(const std::string&);
     std::string toLow(const std::string& word); 
     std::string toUpp(const std::string& word); 
@@ -15,8 +16,8 @@ public:
     void searchWord(const std::string& word);
     void print();
 
-private:
-    std::unordered_map<std::string, Word> mWords;
+protected:
+    std::unordered_set<Word, HashWord> mWords;
 
 };
 
