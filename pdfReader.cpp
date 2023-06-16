@@ -23,12 +23,10 @@ void PDFReader::readFile(const std::string& fileName)
     {
         std::cerr << "Failed to open the PDF file." << std::endl;
         return;
-    }
-    //read process 
+    } 
     std::stringstream pdfContent;
     pdfContent << fileStream.rdbuf();
     std::string content = pdfContent.str();
-    //load
     poppler::document::load_from_data dataLoader(content);
     auto document = dataLoader.load();
     if (!document)
@@ -36,7 +34,6 @@ void PDFReader::readFile(const std::string& fileName)
         std::cerr << "Failed to analyze the PDF file." << std::endl;
         return;
     }
-    //iterate pages
     for (int i = 0; i < document->pages(); ++i)
     {
         const auto page = document->create_page(i);
